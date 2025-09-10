@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: uvicorn edu_register_api.main:app --reload --host 0.0.0.0 --port 8000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: edu_register
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d edu_register" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  db_data:
