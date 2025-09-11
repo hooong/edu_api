@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     APP_ENV: AppEnv = "local"
 
     # DB
-    DATABASE_URL: str = "postgresql://admin:admin@localhost:5432/edu_register"
+    DATABASE_URL: str = "postgresql://admin:admin@db:5432/edu_register"
 
     # JWT
     SECRET_KEY: str = ""

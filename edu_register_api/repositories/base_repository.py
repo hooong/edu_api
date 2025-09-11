@@ -24,8 +24,7 @@ class BaseRepository(Generic[ModelType], ABC):
     def get_all(self) -> List[ModelType]:
         return self.session.query(self.model).filter(self.model.deleted_at.is_(None))
 
-    def create(self, data: dict) -> ModelType:
-        obj = self.model(**data)
+    def save(self, obj: ModelType) -> ModelType:
         self.session.add(obj)
         self.session.flush()
         self.session.refresh(obj)
