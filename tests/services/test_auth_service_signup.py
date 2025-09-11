@@ -9,12 +9,14 @@ from edu_register_api.models.user import User
 
 class TestAuthServiceSignup:
     @pytest.fixture
-    def mock_user_repository(self):
-        return Mock()
+    def mock_uow(self):
+        uow = Mock()
+        uow.user_repository = Mock()
+        return uow
 
     @pytest.fixture
-    def auth_service(self, mock_user_repository):
-        return AuthService(mock_user_repository)
+    def auth_service(self, mock_uow):
+        return AuthService(mock_uow)
 
     @pytest.fixture
     def signup_request(self):
@@ -28,12 +30,10 @@ class TestAuthServiceSignup:
         user.hashed_password = "hashed_password123"
         return user
 
-    def test_signup_success(
-        self, auth_service, mock_user_repository, signup_request, mock_user
-    ):
+    def test_signup_success(self, auth_service, mock_uow, signup_request, mock_user):
         # Given
-        mock_user_repository.email_exists.return_value = False
-        mock_user_repository.save.return_value = mock_user
+        mock_uow.user_repository.email_exists.return_value = False
+        mock_uow.user_repository.save.return_value = mock_user
 
         with patch("edu_register_api.models.user.User.create") as mock_create:
             mock_create.return_value = mock_user
@@ -43,26 +43,24 @@ class TestAuthServiceSignup:
 
             # Then
             assert result == 1
-            mock_user_repository.email_exists.assert_called_once_with(
+            mock_uow.user_repository.email_exists.assert_called_once_with(
                 email="test@example.com"
             )
             mock_create.assert_called_once_with(
                 email="test@example.com", password="password123"
             )
-            mock_user_repository.save.assert_called_once_with(mock_user)
+            mock_uow.user_repository.save.assert_called_once_with(mock_user)
 
-    def test_signup_email_already_exists(
-        self, auth_service, mock_user_repository, signup_request
-    ):
+    def test_signup_email_already_exists(self, auth_service, mock_uow, signup_request):
         # Given
-        mock_user_repository.email_exists.return_value = True
+        mock_uow.user_repository.email_exists.return_value = True
 
         # When & Then
         with pytest.raises(ConflictError) as exc_info:
             auth_service.signup(signup_request)
 
         assert "이미 존재하는 이메일입니다." in str(exc_info.value)
-        mock_user_repository.email_exists.assert_called_once_with(
+        mock_uow.user_repository.email_exists.assert_called_once_with(
             email="test@example.com"
         )
-        mock_user_repository.save.assert_not_called()
+        mock_uow.user_repository.save.assert_not_called()
