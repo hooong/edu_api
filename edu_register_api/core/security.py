@@ -42,5 +42,5 @@ def verify_token(token: str) -> dict:
         return payload
     except jwt.ExpiredSignatureError:
         raise ValueError("토큰이 만료되었습니다.")
-    except jwt.JWTError:
+    except jwt.PyJWTError:
         raise ValueError("유효하지 않은 토큰입니다.")

@@ -17,3 +17,8 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     access_token: str
+
+
+class UserInfo(BaseModel):
+    id: int
+    email: str
