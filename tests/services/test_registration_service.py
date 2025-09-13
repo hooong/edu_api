@@ -87,16 +87,16 @@ class TestRegistrationService:
         )
         mock_registration.complete.assert_not_called()
 
-    def test_complete_registration_already_completed(
+    def test_complete_registration_not_completable(
         self, registration_service, mock_uow, mock_registration
     ):
-        """이미 완료된 등록을 다시 완료 처리하려는 경우"""
+        """완료 불가능한 상태의 등록을 완료 처리하려는 경우"""
         # Given
         user_id = 1
         item_id = 100
         item_type = ItemType.TEST
         mock_registration.complete.side_effect = ConflictError(
-            "이미 완료된 Item입니다."
+            "완료 처리가 불가능한 상태입니다."
         )
         mock_uow.registration_repository.get_by_item_id_and_user_id.return_value = (
             mock_registration
@@ -106,7 +106,7 @@ class TestRegistrationService:
         with pytest.raises(ConflictError) as exc_info:
             registration_service.complete_registration(user_id, item_id, item_type)
 
-        assert "이미 완료된 Item입니다." in str(exc_info.value)
+        assert "완료 처리가 불가능한 상태입니다." in str(exc_info.value)
         mock_uow.registration_repository.get_by_item_id_and_user_id.assert_called_once_with(
             item_id=item_id, user_id=user_id
         )
