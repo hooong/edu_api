@@ -4,10 +4,10 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from edu_register_api.core.security import get_password_hash
-from .base import BaseModel
+from .base import BaseTable
 
 
-class User(BaseModel):
+class User(BaseTable):
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
