@@ -9,7 +9,7 @@ from edu_register_api.models.user import User
 from edu_register_api.core.database import SessionLocal
 
 from edu_register_api.schemas.auth import UserInfo
-from edu_register_api.services import AuthService
+from edu_register_api.services import RegistrationService, AuthService
 
 bearer = HTTPBearer()
 
@@ -40,3 +40,7 @@ def get_current_user(
         raise UnauthorizedError(detail="사용자를 찾을 수 없습니다.")
 
     return UserInfo(id=user_id, email=user.email)
+
+
+def get_registration_service(uow: UnitOfWork = Depends(get_uow)) -> RegistrationService:
+    return RegistrationService(uow)

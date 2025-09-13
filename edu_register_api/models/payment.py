@@ -16,4 +16,4 @@ class Payment(BaseTable):
     paid_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     cancelled_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
-    registration = relationship("Registration", back_populates="payments")
+    registration = relationship("Registration", back_populates="payment")

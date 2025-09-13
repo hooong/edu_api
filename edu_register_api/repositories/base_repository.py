@@ -4,9 +4,9 @@ from typing import TypeVar, Generic, List, Type
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
-from edu_register_api.models import BaseModel
+from edu_register_api.models import BaseTable
 
-ModelType = TypeVar("ModelType", bound=BaseModel)
+ModelType = TypeVar("ModelType", bound=BaseTable)
 
 
 class BaseRepository(Generic[ModelType], ABC):
@@ -22,7 +22,9 @@ class BaseRepository(Generic[ModelType], ABC):
         )
 
     def get_all(self) -> List[ModelType]:
-        return self.session.query(self.model).filter(self.model.deleted_at.is_(None))
+        return (
+            self.session.query(self.model).filter(self.model.deleted_at.is_(None)).all()
+        )
 
     def save(self, obj: ModelType) -> ModelType:
         self.session.add(obj)

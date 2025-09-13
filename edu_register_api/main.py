@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from edu_register_api.core.config import settings
 from edu_register_api.api.auth import router as auth_router
+from edu_register_api.api.course import router as course_router
+from edu_register_api.api.test import router as test_router
 
 
 app = FastAPI(title=f"{settings.APP_ENV} Edu Register API")
@@ -16,3 +18,5 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(course_router)
+app.include_router(test_router)
