@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
 
-from edu_register_api.core.database import get_db
+from edu_register_api.core.depends import get_auth_service
 from edu_register_api.services.auth_service import AuthService
-from edu_register_api.repositories.user_repository import UserRepository
 from edu_register_api.schemas.auth import (
     SignupRequest,
     SignupResponse,
@@ -12,11 +10,6 @@ from edu_register_api.schemas.auth import (
 )
 
 router = APIRouter(prefix="", tags=["Auth"])
-
-
-def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
-    user_repository = UserRepository(db)
-    return AuthService(user_repository)
 
 
 @router.post(
