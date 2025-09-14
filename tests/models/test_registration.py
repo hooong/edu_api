@@ -43,6 +43,42 @@ class TestRegistration:
         # Then
         assert result is False
 
+    def test_is_completed_when_status_is_pending(self):
+        """status가 PENDING일 때 is_completed는 False를 반환해야 한다"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.PENDING
+
+        # When
+        result = registration.is_completed
+
+        # Then
+        assert result is False
+
+    def test_is_completed_when_status_is_paid(self):
+        """status가 PAID일 때 is_completed는 False를 반환해야 한다"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.PAID
+
+        # When
+        result = registration.is_completed
+
+        # Then
+        assert result is False
+
+    def test_is_completed_when_status_is_completed(self):
+        """status가 COMPLETED일 때 is_completed는 True를 반환해야 한다"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.COMPLETED
+
+        # When
+        result = registration.is_completed
+
+        # Then
+        assert result is True
+
     def test_complete_sets_completed_at_to_current_time(self):
         """complete() 메서드는 completed_at을 현재 시간으로 설정해야 한다"""
         # Given
