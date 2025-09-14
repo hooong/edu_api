@@ -29,3 +29,8 @@ class PaymentStatus(enum.StrEnum):
     PAID = "PAID"
     FAILED = "FAILED"
     CANCELED = "CANCELED"
+
+
+class PaymentStatusFilter(enum.StrEnum):
+    PAID = "PAID"
+    CANCELED = "CANCELED"

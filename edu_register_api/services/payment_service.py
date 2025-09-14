@@ -1,6 +1,16 @@
-from edu_register_api.core.erros import NotFoundError, ConflictError
+from datetime import date
+
+from edu_register_api.core.erros import NotFoundError, ConflictError, ValidationError
 from edu_register_api.core.uow import UnitOfWork
+from edu_register_api.enums import PaymentStatus, PaymentStatusFilter, PaymentMethod
 from edu_register_api.models import Payment
+from edu_register_api.schemas.payment import (
+    PaymentListResponse,
+    PaymentDetailResponse,
+    PaginationResponse,
+    PaymentItemInfo,
+    PaymentRegistrationInfo,
+)
 
 
 class PaymentService:
@@ -34,3 +44,57 @@ class PaymentService:
 
     def _payment_cancel(self) -> bool:
         return True
+
+    def get_user_payments(
+        self,
+        user_id: int,
+        page: int = 1,
+        size: int = 10,
+        payment_status: PaymentStatusFilter = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
+    ) -> PaymentListResponse:
+        if start_date and end_date and start_date > end_date:
+            raise ValidationError("시작일은 종료일보다 미래일 수 없습니다.")
+
+        payments, total = self.uow.payment_repository.get_user_payments_with_pagination(
+            user_id=user_id,
+            page=page,
+            size=size,
+            start_date=start_date,
+            end_date=end_date,
+            payment_status=payment_status,
+        )
+
+        payment_responses = []
+        for payment in payments:
+            payment_detail = PaymentDetailResponse(
+                id=payment.id,
+                amount=payment.amount,
+                payment_status=PaymentStatus(payment.status),
+                payment_method=PaymentMethod(payment.method),
+                paid_at=payment.paid_at,
+                cancelled_at=payment.cancelled_at,
+                created_at=payment.created_at,
+                item=PaymentItemInfo(
+                    id=payment.registration.item.id,
+                    title=payment.registration.item.title,
+                    item_type=payment.registration.item.item_type,
+                ),
+                registration=PaymentRegistrationInfo(
+                    id=payment.registration_id,
+                    registration_status=payment.registration.status,
+                    completed_at=payment.registration.completed_at,
+                    deleted_at=payment.registration.deleted_at,
+                ),
+            )
+            payment_responses.append(payment_detail)
+
+        return PaymentListResponse(
+            payments=payment_responses,
+            pagination=PaginationResponse(
+                page=page,
+                size=size,
+                total=total,
+            ),
+        )
