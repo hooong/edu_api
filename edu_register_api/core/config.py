@@ -9,6 +9,11 @@ class Settings(BaseSettings):
     # DB
     DATABASE_URL: str = "postgresql://admin:admin@db:5432/edu_register"
 
+    # Redis
+    REDIS_URL: str = "redis://redis:6379/0"
+    REDIS_LOCK_TIMEOUT: int = 30  # 초
+    REDIS_LOCK_BLOCKING_TIMEOUT: int = 10  # 초
+
     # JWT
     SECRET_KEY: str = "k8CIQfzEVVwEaXbffUI9mZSnFgL3wTlDSisr-j5R194"
     ALGORITHM: str = "HS256"

@@ -17,6 +17,7 @@ dependencies = [
     "alembic (>=1.16.5,<2.0.0)",
     "psycopg2-binary (>=2.9.10,<3.0.0)",
     "sqlalchemy (>=2.0.43,<3.0.0)",
+    "redis (>=6.4.0,<7.0.0)",
 ]
 
 
