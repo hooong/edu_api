@@ -34,3 +34,12 @@ class PaymentStatus(enum.StrEnum):
 class PaymentStatusFilter(enum.StrEnum):
     PAID = "PAID"
     CANCELED = "CANCELED"
+
+
+class ItemStatusFilter(enum.StrEnum):
+    AVAILABLE = "available"
+
+
+class ItemSortType(enum.StrEnum):
+    CREATED = "created"
+    POPULAR = "popular"

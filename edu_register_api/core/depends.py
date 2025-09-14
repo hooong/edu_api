@@ -10,8 +10,13 @@ from edu_register_api.models.user import User
 from edu_register_api.core.database import SessionLocal
 
 from edu_register_api.schemas.auth import UserInfo
-from edu_register_api.services import RegistrationService, AuthService
-from edu_register_api.services.payment_service import PaymentService
+from edu_register_api.services import (
+    RegistrationService,
+    AuthService,
+    PaymentService,
+    TestService,
+    CourseService,
+)
 
 bearer = HTTPBearer()
 
@@ -58,3 +63,15 @@ def get_payment_service(
     uow: UnitOfWork = Depends(get_uow),
 ) -> PaymentService:
     return PaymentService(uow=uow)
+
+
+def get_test_service(
+    uow: UnitOfWork = Depends(get_uow),
+) -> TestService:
+    return TestService(uow=uow)
+
+
+def get_course_service(
+    uow: UnitOfWork = Depends(get_uow),
+) -> CourseService:
+    return CourseService(uow=uow)
