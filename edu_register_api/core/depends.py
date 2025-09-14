@@ -3,6 +3,7 @@ from typing import Generator
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from edu_register_api.core.erros import UnauthorizedError
+from edu_register_api.core.redis import RedisClient, redis_client
 from edu_register_api.core.uow import UnitOfWork
 from edu_register_api.core.security import verify_token
 from edu_register_api.models.user import User
@@ -42,5 +43,11 @@ def get_current_user(
     return UserInfo(id=user_id, email=user.email)
 
 
-def get_registration_service(uow: UnitOfWork = Depends(get_uow)) -> RegistrationService:
-    return RegistrationService(uow)
+def get_redis() -> RedisClient:
+    return redis_client
+
+
+def get_registration_service(
+    uow: UnitOfWork = Depends(get_uow), redis: RedisClient = Depends(get_redis)
+) -> RegistrationService:
+    return RegistrationService(uow=uow, redis_client=redis)

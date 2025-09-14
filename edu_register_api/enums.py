@@ -16,3 +16,16 @@ class RegistrationStatus(enum.StrEnum):
     PENDING = "PENDING"
     PAID = "PAID"
     COMPLETED = "COMPLETED"
+
+
+class PaymentMethod(enum.StrEnum):
+    CARD = "card"
+    KAKAOPAY = "kakaopay"
+    NAVERPAY = "naverpay"
+
+
+class PaymentStatus(enum.StrEnum):
+    PENDING = "PENDING"
+    PAID = "PAID"
+    FAILED = "FAILED"
+    CANCELED = "CANCELED"

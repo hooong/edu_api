@@ -39,3 +39,9 @@ class Registration(BaseTable):
 
         self.completed_at = datetime.now(timezone.utc)
         self.status = RegistrationStatus.COMPLETED.value
+
+    def paid(self) -> None:
+        if not self.status == RegistrationStatus.PENDING:
+            raise ConflictError("결제 완료 처리가 불가능한 상태입니다.")
+
+        self.status = RegistrationStatus.PAID.value
