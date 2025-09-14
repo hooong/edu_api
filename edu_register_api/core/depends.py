@@ -11,6 +11,7 @@ from edu_register_api.core.database import SessionLocal
 
 from edu_register_api.schemas.auth import UserInfo
 from edu_register_api.services import RegistrationService, AuthService
+from edu_register_api.services.payment_service import PaymentService
 
 bearer = HTTPBearer()
 
@@ -51,3 +52,9 @@ def get_registration_service(
     uow: UnitOfWork = Depends(get_uow), redis: RedisClient = Depends(get_redis)
 ) -> RegistrationService:
     return RegistrationService(uow=uow, redis_client=redis)
+
+
+def get_payment_service(
+    uow: UnitOfWork = Depends(get_uow),
+) -> PaymentService:
+    return PaymentService(uow=uow)

@@ -33,6 +33,10 @@ class Registration(BaseTable):
     def is_completable(self) -> bool:
         return self.status == RegistrationStatus.PAID
 
+    @property
+    def is_completed(self) -> bool:
+        return self.status == RegistrationStatus.COMPLETED
+
     def complete(self) -> None:
         if not self.is_completable:
             raise ConflictError("완료 처리가 불가능한 상태입니다.")
