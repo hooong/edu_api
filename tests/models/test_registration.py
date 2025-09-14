@@ -112,3 +112,51 @@ class TestRegistration:
         # Then
         assert registration.completed_at is not None
         assert registration.completed_at != old_time
+
+    def test_paid_success_when_pending_status(self):
+        """PENDING 상태에서 paid() 호출 시 성공해야 한다"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.PENDING
+
+        # When
+        registration.paid()
+
+        # Then
+        assert registration.status == RegistrationStatus.PAID.value
+
+    def test_paid_raises_conflict_error_when_already_paid(self):
+        """이미 PAID 상태에서 paid()를 호출하면 ConflictError가 발생해야 한다"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.PAID
+
+        # When & Then
+        with pytest.raises(ConflictError) as exc_info:
+            registration.paid()
+
+        assert "결제 완료 처리가 불가능한 상태입니다." in str(exc_info.value)
+
+    def test_paid_raises_conflict_error_when_completed_status(self):
+        """COMPLETED 상태에서 paid()를 호출하면 ConflictError가 발생해야 한다"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.COMPLETED
+
+        # When & Then
+        with pytest.raises(ConflictError) as exc_info:
+            registration.paid()
+
+        assert "결제 완료 처리가 불가능한 상태입니다." in str(exc_info.value)
+
+    def test_paid_changes_status_to_paid_enum_value(self):
+        """paid() 메서드가 status를 올바른 enum 값으로 설정하는지 확인"""
+        # Given
+        registration = Registration()
+        registration.status = RegistrationStatus.PENDING
+
+        # When
+        registration.paid()
+
+        # Then
+        assert registration.status == RegistrationStatus.PAID.value
