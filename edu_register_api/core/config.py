@@ -7,10 +7,10 @@ class Settings(BaseSettings):
     APP_ENV: AppEnv = "local"
 
     # DB
-    DATABASE_URL: str = "postgresql://admin:admin@localhost:5432/edu_register"
+    DATABASE_URL: str = "postgresql://admin:admin@db:5432/edu_register"
 
     # Redis
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_URL: str = "redis://redis:6379/0"
     REDIS_LOCK_TIMEOUT: int = 30  # 초
     REDIS_LOCK_BLOCKING_TIMEOUT: int = 10  # 초
 
