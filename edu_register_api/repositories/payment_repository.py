@@ -1,6 +1,6 @@
-from datetime import date
+from datetime import date, datetime
 
-from sqlalchemy import and_, func, desc
+from sqlalchemy import and_, desc
 from sqlalchemy.orm import Session, joinedload
 
 from edu_register_api.enums import PaymentStatusFilter
@@ -46,9 +46,11 @@ class PaymentRepository(BaseRepository[Payment]):
             query = query.filter(self.model.status == payment_status.value)
 
         if start_date:
-            query = query.filter(func.date(self.model.paid_at) >= start_date)
+            start_datetime = datetime.combine(start_date, datetime.min.time())
+            query = query.filter(self.model.paid_at >= start_datetime)
         if end_date:
-            query = query.filter(func.date(self.model.paid_at) <= end_date)
+            end_datetime = datetime.combine(end_date, datetime.max.time())
+            query = query.filter(self.model.paid_at <= end_datetime)
 
         total = query.count()
 
