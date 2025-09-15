@@ -12,7 +12,7 @@ class Item(BaseTable):
     item_type: Mapped[str] = mapped_column(
         String(20), nullable=False, default=ItemType.COURSE
     )
-    start_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    end_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    start_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
+    end_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
 
     registrations = relationship("Registration", back_populates="item")
