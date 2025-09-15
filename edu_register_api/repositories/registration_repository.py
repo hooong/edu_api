@@ -15,10 +15,9 @@ class RegistrationRepository(BaseRepository[Registration]):
         return (
             self.session.query(self.model)
             .options(joinedload(self.model.item))
-            .join(Item)
             .filter(
                 and_(
-                    Item.id == item_id,
+                    self.model.item.has(Item.id == item_id),
                     self.model.user_id == user_id,
                     self.model.deleted_at.is_(None),
                 )

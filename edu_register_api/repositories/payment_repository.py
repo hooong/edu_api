@@ -4,7 +4,7 @@ from sqlalchemy import and_, desc
 from sqlalchemy.orm import Session, joinedload
 
 from edu_register_api.enums import PaymentStatusFilter
-from edu_register_api.models import Payment, Registration, Item
+from edu_register_api.models import Payment, Registration
 from edu_register_api.repositories import BaseRepository
 
 
@@ -31,12 +31,10 @@ class PaymentRepository(BaseRepository[Payment]):
     ) -> tuple[list[Payment], int]:
         query = (
             self.session.query(self.model)
-            .join(Registration, self.model.registration_id == Registration.id)
-            .join(Item, Registration.item_id == Item.id)
             .options(joinedload(self.model.registration).joinedload(Registration.item))
             .filter(
                 and_(
-                    Registration.user_id == user_id,
+                    Payment.registration.has(user_id=user_id),
                     self.model.deleted_at.is_(None),
                 )
             )
